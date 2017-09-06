@@ -38,19 +38,36 @@ describe('Gallery Routes', function (){
     ]);
   });
   describe('POST /api/gallery', function (){
-    it('should return a gallery',function() {
-      return request
-        .post('/api/gallery')
-        .set({'Authorization': `Bearer ${this.testToken}`})
-        .send(exampleGallery)
-        .expect(200)
-        .expect(res => {
-          expect(res.body.name).to.equal(exampleGallery.name);
-          expect(res.body.created).to.not.be.undefined;
-        });
+    describe('valid authorizaion and body', function(){
+      it('should return a gallery',function() {
+        return request
+          .post('/api/gallery')
+          .set({'Authorization': `Bearer ${this.testToken}`})
+          .send(exampleGallery)
+          .expect(200)
+          .expect(res => {
+            expect(res.body.name).to.equal(exampleGallery.name);
+            expect(res.body.created).to.not.be.undefined;
+          });
+      });
     });
-
+    describe('invalid authorizaion, valid body', function(){
+      it('should return 401 if token is missing',function() {
+        return request
+          .post('/api/gallery')
+          .set({'Authorization': `Bearer `})
+          .send(exampleGallery)
+          .expect(401);
+      });
+      it('should return 401 with no authorizaion',function() {
+        return request
+          .post('/api/gallery')
+          .send(exampleGallery)
+          .expect(401);
+      });
+    });
   });
+
   describe('GET /api/gallery/:id', function (){
     describe('invalid id', function(){
       it('should return 404', function (){
