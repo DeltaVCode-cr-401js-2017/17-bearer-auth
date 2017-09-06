@@ -68,6 +68,14 @@ describe('Gallery Routes', function (){
           .expect(404);
       });
     });
+    describe('No token sent', function(){
+      it('should return 401', function (){
+        return request
+          .get('/api/gallery/thislookslikeanid1234567')
+          .set({'Authorization': `Bearer `})
+          .expect(401);
+      });
+    });
     describe('valid id', function(){
       it('should return a gallery', function (){
         return request
