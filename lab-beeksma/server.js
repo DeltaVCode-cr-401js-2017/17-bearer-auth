@@ -15,6 +15,7 @@ app.use(morgan('dev'));
 app.use(cors());
 
 app.use(require('./route/auth'));
+app.use(require('./route/gallery-route'));
 
 app.use(require('./lib/error-middleware'));
 
