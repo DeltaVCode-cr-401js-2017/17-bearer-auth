@@ -16,8 +16,6 @@ app.use(cors());
 
 app.use(require('./route/auth'));
 
-app.use(require('./lib/basic-auth-middleware'));
-
 app.use(require('./lib/error-middleware'));
 
 const PORT = process.env.PORT;
