@@ -15,6 +15,10 @@ module.exports = function(err,req,res,next){
   else if (err.name === 'TypeError'){
     err = createError(401,err.message);
   }
+  else if (err.name === 'CastError' && err.kind === 'ObjectId'){
+    debug(err.message);
+    err = createError(404,err.message);
+  }
   else {
     console.error('This is the Last stop for catching errors',err);
     err = createError(500, err.message);
