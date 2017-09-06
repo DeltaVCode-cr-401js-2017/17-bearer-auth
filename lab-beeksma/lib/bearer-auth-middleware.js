@@ -9,7 +9,6 @@ const User = require('../model/user');
 module.exports = function (req, res, next) {
   debug('bearer-auth-middleware');
   let authHeader = req.headers.authorization;
-  debug('authHeader', authHeader);
   if (!authHeader) {
     return next(createError(401, 'authorization header missing'));
   }
@@ -17,11 +16,9 @@ module.exports = function (req, res, next) {
   if (!token) {
     return next(createError(401, 'token messing'));
   }
-  debug('TOKEN', token);
   jwt.verify(token, process.env.APP_SECRET, (err, decoded) => {
     if (err) return next(err);
     debug('decoded token', decoded);
-
     User.findOne({ findHash: decoded.token })
       .then(user => {
         req.user = user;

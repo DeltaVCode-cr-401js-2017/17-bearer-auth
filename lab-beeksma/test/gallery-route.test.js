@@ -108,7 +108,7 @@ describe('Gallery Routes', function (){
     describe('No token sent', function(){
       it('should return 401', function (){
         return request
-          .get('/api/gallery/thislookslikeanid1234567')
+          .get(`/api/gallery/${this.testGallery.id}`)
           .set({'Authorization': `Bearer `})
           .expect(401);
       });
@@ -183,7 +183,7 @@ describe('Gallery Routes', function (){
     describe('valid looking id not found', function(){
       it('should return 404', function (){
         return request
-          .put('/api/gallery/thislookslikeanid1234567')
+          .put(`/api/gallery/thislookslikeanid1234567`)
           .send(updatedGallery)
           .set({'Authorization': `Bearer ${this.testToken}`})
           .expect(404);
@@ -192,7 +192,7 @@ describe('Gallery Routes', function (){
     describe('No token sent', function(){
       it('should return 401', function (){
         return request
-          .put('/api/gallery/thislookslikeanid1234567')
+          .put(`/api/gallery/${this.testGallery._id}`)
           .send(updatedGallery)
           .set({'Authorization': `Bearer `})
           .expect(401);
