@@ -66,6 +66,21 @@ describe('Gallery Routes', function (){
           .expect(401);
       });
     });
+    describe('valid authorizaion and invalid body', function(){
+      it('should return 400 if body is missing',function() {
+        return request
+          .post('/api/gallery')
+          .set({'Authorization': `Bearer ${this.testToken}`})
+          .expect(400);
+      });
+      it('should return 400 if body is not valid json',function() {
+        return request
+          .post('/api/gallery')
+          .send('I am not JSON yo')
+          .set({'Authorization': `Bearer ${this.testToken}`})
+          .expect(400);
+      });
+    });
   });
 
   describe('GET /api/gallery/:id', function (){
