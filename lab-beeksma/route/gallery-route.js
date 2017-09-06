@@ -3,24 +3,37 @@
 const jsonParser = require('body-parser').json();
 const debug = require('debug')('app:route/gallery-route');
 const Router = require('express').Router;
-//const createError = require('http-errors');
+const createError = require('http-errors');
 
 const Gallery = require('../model/gallery');
 const router = module.exports = new Router();
 
-router.post('/api/gallery:id', jsonParser,  (req,res,next) => {
+router.post('/api/gallery', jsonParser, (req,res,next) => {
   debug('POST /api/gallery');
 
-  new Gallery(req.body)
-    .save()
+  new Gallery({
+    ...req.body,
+    userID: req.user._id
+  }).save()
     .then(gallery => res.json(gallery))
     .catch(next);
 });
+
 
 router.get('/api/gallery/:id', (req,res,next) =>{
   debug(`GET /api/gallery/${req.params.id}`);
 
   Gallery.findById(req.params.id)
-    .then(gallery => gallery ? res.json(gallery) : res.send(404))
+    .then(gallery => {
+      if (!gallery)
+        return res.sendStatus(404);
+
+      if (gallery.userID.toString() !== req.user._id.toString()) {
+        debug(`permission denied for ${req.user._id} (owner: ${gallery.userID})`);
+        return next(createError(401, 'permission denied'));
+      }
+
+      res.json(gallery);
+    })
     .catch(next);
 });

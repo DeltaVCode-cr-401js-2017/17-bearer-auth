@@ -20,11 +20,11 @@ const exampleGallery = {
 };
 
 describe('Gallery Routes', function (){
-  beforeEach(function(){
-    return new User(exampleUser)
-      .generatePasswordHash(exampleUser.password)
-      .then(user => user.save())
-      .then(user => this.testUser = user);
+  beforeEach(function () {
+    return User.createUser(exampleUser)
+      .then(user => this.testUser = user)
+      .then(user => user.generateToken())
+      .then(token => this.testToken = token);
   });
   beforeEach(function (){
     return new Gallery({...exampleGallery,userID: this.testUser._id.toString()})
@@ -41,12 +41,12 @@ describe('Gallery Routes', function (){
     it('should return a gallery',function() {
       return request
         .post('/api/gallery')
-        //.set({'Authorization': `Bearer ${this.testToken}`,})
+        .set({'Authorization': `Bearer ${this.testToken}`})
         .send(exampleGallery)
         .expect(200)
         .expect(res => {
-          expect(res.bosy.name).to.equal(exampleGallery.name);
-          expect(res.bosy.created).to.not.be.undefined;
+          expect(res.body.name).to.equal(exampleGallery.name);
+          expect(res.body.created).to.not.be.undefined;
         });
     });
 
@@ -56,7 +56,7 @@ describe('Gallery Routes', function (){
       it('should return 404', function (){
         return request
           .get('/api/gallery/noID')
-          //.set({'Authorization': `Bearer ${this.testToken}`,})
+          .set({'Authorization': `Bearer ${this.testToken}`})
           .expect(404);
       });
     });
@@ -64,7 +64,7 @@ describe('Gallery Routes', function (){
       it('should return 404', function (){
         return request
           .get('/api/gallery/thislookslikeanid1234567')
-          //.set({'Authorization': `Bearer ${this.testToken}`,})
+          .set({'Authorization': `Bearer ${this.testToken}`})
           .expect(404);
       });
     });
@@ -72,7 +72,7 @@ describe('Gallery Routes', function (){
       it('should return a gallery', function (){
         return request
           .get(`/api/gallery/${this.testGallery.id}`)
-          //.set({'Authorization': `Bearer ${this.testToken}`,})
+          .set({'Authorization': `Bearer ${this.testToken}`})
           .expect(200)
           .expect(res => {
             expect(res.body.name).to.equal(exampleGallery.name);
@@ -91,7 +91,7 @@ describe('Gallery Routes', function (){
       it('should return 401', function () {
         return request
           .get(`/api/gallery/${this.testGallery._id}`)
-          //.set({'Authorization': `Bearer ${this.wrongToken}`,})
+          .set({'Authorization': `Bearer ${this.wrongToken}`})
           .expect(401);
       });
     });
