@@ -3,7 +3,7 @@
 const jsonParser = require('body-parser').json();
 const debug = require('debug')('app:route/gallery-route');
 const Router = require('express').Router;
-const createError = require('http-errors');
+//const createError = require('http-errors');
 
 const Gallery = require('../model/gallery');
 const router = module.exports = new Router();
@@ -21,6 +21,6 @@ router.get('/api/gallery/:id', (req,res,next) =>{
   debug(`GET /api/gallery/${req.params.id}`);
 
   Gallery.findById(req.params.id)
-    .then(gallery => gallery ? res.json(gallery) : res.sendStatus(404))
+    .then(gallery => gallery ? res.json(gallery) : res.send(404))
     .catch(next);
 });
