@@ -69,4 +69,11 @@ userSchema.methods.generateToken = function(){
     );
 };
 
-module.exports = mongoose.models.user || mongoose.model('user',userSchema);
+const User = module.exports = mongoose.models.user || mongoose.model('user',userSchema);
+
+User.createUser = function(body){
+  const { password, ..._user} = body;
+  return new User(_user)
+    .generatePasswordHash(password)
+    .then(user => user.save());
+};
