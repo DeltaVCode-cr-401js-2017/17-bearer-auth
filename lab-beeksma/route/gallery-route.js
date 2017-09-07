@@ -68,3 +68,23 @@ router.put('/api/gallery/:id', jsonParser, (req,res,next) =>{
     })
     .catch(next);
 });
+
+router.delete('/api/gallery/:id', (req,res,next) => {
+  debug(`PUT /api/gallery/${req.params.id}`);
+
+  Gallery.findById(req.params.id)
+    .then(gallery => {
+      if (!gallery)
+        return res.sendStatus(404);
+
+      if (gallery.userID.toString() !== req.user._id.toString()) {
+        debug(`permission denied for ${req.user._id} (owner: ${gallery.userID})`);
+        return next(createError(401, 'permission denied'));
+      }
+      else{
+        gallery.remove()
+          .then(gallery => res.json(gallery));
+      }
+    })
+    .catch(next);
+});
