@@ -19,14 +19,10 @@ const exampleGallery = {
   desc: 'amazing test gallery description'
 };
 
-describe.only('Gallery Routes',function(){
+describe('Gallery Routes',function(){
   beforeEach(function () {
     return User.createUser(exampleUser)
       .then(user => this.testUser = user)
-      .then(user => {
-        console.log('beforeEach', user._id);
-        return user;
-      })
       .then(user => user.generateToken())
       .then(token => this.testToken = token);
   });
@@ -40,11 +36,11 @@ describe.only('Gallery Routes',function(){
     ]);
   });
 
-  describe.skip('POST /api/gallery',function(){
+  describe.only('POST /api/gallery',function(){
     it('should return a gallery', function(){
       return request.post('/api/gallery')
-        .send(exampleGallery)
         .set({ Authorization: `Bearer ${this.testToken}` })
+        .send(exampleGallery)
         .expect(200)
         .expect(res => {
           expect(res.body.name).to.equal(exampleGallery.name);
@@ -70,21 +66,12 @@ describe.only('Gallery Routes',function(){
       });
     });
     describe('valid id',function(){
-      /*
-      before(function(){
-        return new User(exampleUser)
-          .generatePasswordHash(exampleUser.password)
-          .then(user => user.save())
-          .then(user => this.testUser = user);
-      });
-      */
       beforeEach(function(){
         console.log('before', this.testUser._id);
         return new Gallery({
           ...exampleGallery,
           userID: this.testUser._id.toString()
-        })
-          .save()
+        }).save()
           .then(gallery => this.testGallery = gallery);
       });
       it('should return a gallery',function(){

@@ -25,4 +25,17 @@ router.get('/api/gallery/:id',bearerAuth,(req,res,next) => {
     .catch(next);
 });
 
-//TODO: router.post
+router.post('/api/gallery',jsonParser,(req,res,next) => {
+  debug('POST /api/gallery');
+
+  console.log('req.user: ',req.user);
+
+  new Gallery({
+    ...req.body,
+    userID: req.user._id
+  }).save()
+    .then(gallery => res.json(gallery))
+    .catch(next);
+    console.log('req body AFTER: ',req.body);
+
+});

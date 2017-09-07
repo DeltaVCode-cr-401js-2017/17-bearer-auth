@@ -10,9 +10,11 @@ module.exports = function(err,req,res,next){
     debug(err.message);
   }
   else if (err.name === 'ValidationError'){
+    debug(err.message);
     err = createError(400, err.message);
   }
   else if (err.name === 'TypeError'){
+    debug(err.message);
     err = createError(401,err.message);
   }
   else if (err.name === 'CastError' && err.kind === 'ObjectId'){

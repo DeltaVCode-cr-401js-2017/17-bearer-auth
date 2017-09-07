@@ -72,6 +72,7 @@ userSchema.methods.generateToken = function(){
 const User = module.exports = mongoose.models.user || mongoose.model('user',userSchema);
 
 User.createUser = function(body){
+  debug(body);
   const { password, ..._user} = body;
   return new User(_user)
     .generatePasswordHash(password)
