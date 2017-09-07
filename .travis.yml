@@ -4,6 +4,8 @@ node_js:
 sudo: required
 services:
   - mongodb
+env:
+  - MONGODB_URI=mongodb://localhost/401-dvgram APP_SECRET=DeltaV PORT=3000
 script:
   - |
     (for dir in $(find $PWD -maxdepth 2 -name package.json -printf "%h\n"); do
