@@ -124,10 +124,10 @@ describe('Gallery Routes',function(){
           .expect(401);
       });
       it('should return 401 if the token is invalid',function(){
-        return request.get(`/api/gallery${this.testGallery._id}`)
+        return request.get(`/api/gallery/${this.testGallery._id}`)
           .set({ Authorization: `Bearer ${this.hackerToken}`})
           .expect(401);
-      })
+      });
     });
   });
 });

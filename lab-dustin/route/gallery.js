@@ -14,15 +14,23 @@ router.get('/api/gallery/:id',bearerAuth,(req,res,next) => {
 
   Gallery.findById(req.params.id)
     .then(gallery => {
-      if (!gallery) return res.sendStatus(404);
+      if (!gallery) {
+        debug('Gallery not found');
+        return next(createError(404,'Gallery not found'));
+      }
 
       debug('user', req.user);
       debug('gallery', gallery);
-      if (req.user._id.toString() !== gallery.userID.toString())  return res.sendStatus(401,'permission denied');
-
+      if (req.user._id.toString() !== gallery.userID.toString()){
+        debug('Permission denied');
+        return res.sendStatus(401,'permission denied');
+      }
       res.json(gallery);
     })
-    .catch(next);
+    .catch(function(err){
+      debug(err.message);
+      next();
+    });
 });
 
 router.post('/api/gallery',jsonParser,(req,res,next) => {
