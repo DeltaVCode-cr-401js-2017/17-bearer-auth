@@ -1,8 +1,8 @@
 {
   "rules": {
     "no-console": "off",
-    "indent": [ "error", 2 ],
-    "quotes": [ "error", "single" ],
+    "indent": [ "error", 2, { "SwitchCase": 1 }],
+    "quotes": [ "error", "single", { "allowTemplateLiterals": true } ],
     "semi": ["error", "always"]
   },
   "env": {
@@ -11,10 +11,14 @@
     "mocha": true,
     "jasmine": true
   },
-  "ecmaFeatures": {
-    "modules": true,
-    "experimentalObjectRestSpread": true,
-    "impliedStrict": true
+
+  "parserOptions":{
+    "ecmaFeatures": {
+      "modules": true,
+      "experimentalObjectRestSpread": true,
+      "impliedStrict": true
+    }
   },
-  "extends": "eslint:recommended"
+
+   "extends": "eslint:recommended"
 }

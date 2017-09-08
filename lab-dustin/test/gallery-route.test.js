@@ -23,8 +23,15 @@ describe('Gallery Routes',function(){
   beforeEach(function () {
     return User.createUser(exampleUser)
       .then(user => this.testUser = user)
+      .then(user => {
+        debug('testUser ',user);
+        return user;
+      })
       .then(user => user.generateToken())
-      .then(token => this.testToken = token);
+      .then(token => this.testToken = token)
+      .then(token => {
+        debug('testToken ',token);
+      });
   });
   afterEach(function(){
     delete this.testUser;
@@ -36,7 +43,7 @@ describe('Gallery Routes',function(){
     ]);
   });
 
-  describe.only('POST /api/gallery',function(){
+  describe('POST /api/gallery',function(){
     it('should return a gallery', function(){
       return request.post('/api/gallery')
         .set({ Authorization: `Bearer ${this.testToken}` })
@@ -60,20 +67,18 @@ describe('Gallery Routes',function(){
     });
   });
 
-  describe('GET /api/gallery/:id',function(){
-    describe('invalid id', function(){
-      it('should return 404',function(){
+  describe.only('GET /api/gallery/:id',function(){
+    describe('should return 404', function(){
+      it('for invalid id',function(){
         return request.get('/api/gallery/missing')
           .set({ Authorization: `Bearer ${this.testToken}` })
           .expect(404);
       });
     });
-    describe('missing id',function(){
-      it('should return 404',function(){
-        return request.get('/api/gallery/deadbeefdeadbeefdeadbeef')
-          .set({ Authorization: `Bearer ${this.testToken}` })
-          .expect(404);
-      });
+    it('for missing id',function(){
+      return request.get('/api/gallery')
+        .set({ Authorization: `Bearer ${this.testToken}` })
+        .expect(404);
     });
     describe('valid id',function(){
       beforeEach(function(){

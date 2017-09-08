@@ -15,7 +15,7 @@ const exampleUser = {
   email: 'example@example.com'
 };
 
-describe.skip('Auth routes',function(){
+describe('Auth routes',function(){
   describe('that fail',function(){
     it('should return 401 for no authentication',function(){
       return request.get('/api/signin')
@@ -44,7 +44,7 @@ describe.skip('Auth routes',function(){
         .expect(res => debug(res.text));
     });
   });
-  describe.skip('POST /api/signup',function(){
+  describe('POST /api/signup',function(){
     describe('without a valid POST',function(){
       before(function(){
         return new User(exampleUser)
