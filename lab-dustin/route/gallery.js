@@ -34,7 +34,7 @@ router.get('/api/gallery/:id',bearerAuth,(req,res,next) => {
 });
 
 router.post('/api/gallery',jsonParser,(req,res,next) => {
-  debug('POST /api/gallery');
+  debug(`POST /api/gallery${req.params.id}`);
 
   console.log('req.user: ',req.user);
 
@@ -44,6 +44,11 @@ router.post('/api/gallery',jsonParser,(req,res,next) => {
   }).save()
     .then(gallery => res.json(gallery))
     .catch(next);
-    console.log('req body AFTER: ',req.body);
+});
 
+router.put('/api/gallery/:id',jsonParser,(req,res,next) => {
+  debug(`PUT /api/gallery${req.params.id}`);
+
+  Gallery.findByIdAndUpdate(req.params.id,req.body)
+    .then(response => debug(response));
 });

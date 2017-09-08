@@ -73,13 +73,11 @@ describe('Gallery Routes',function(){
     });
   });
 
-  describe.only('GET /api/gallery/:id',function(){
-    describe('should return 404', function(){
-      it('for invalid id',function(){
-        return request.get('/api/gallery/missing')
-          .set({ Authorization: `Bearer ${this.testToken}` })
-          .expect(404);
-      });
+  describe('GET /api/gallery/:id',function(){
+    it('for invalid id',function(){
+      return request.get('/api/gallery/missing')
+        .set({ Authorization: `Bearer ${this.testToken}` })
+        .expect(404);
     });
     it('for missing id',function(){
       return request.get('/api/gallery')
@@ -88,13 +86,17 @@ describe('Gallery Routes',function(){
     });
     describe('valid id',function(){
       beforeEach(function(){
-        console.log('before', this.testUser._id);
         return new Gallery({
           ...exampleGallery,
           userID: this.testUser._id.toString()
         }).save()
           .then(gallery => this.testGallery = gallery)
           .then(gallery => debug('gallery ',gallery));
+      });
+      afterEach(function(){
+        delete this.testGallery;
+
+        return Promise.resolve(Gallery.remove({}));
       });
       it('should return a gallery',function(){
         return request.get(`/api/gallery/${this.testGallery._id}`)
@@ -128,6 +130,31 @@ describe('Gallery Routes',function(){
           .set({ Authorization: `Bearer ${this.hackerToken}`})
           .expect(401);
       });
+    });
+  });
+  describe('PUT /api/gallery',function(){
+    beforeEach(function(){
+      return new Gallery({
+        ...exampleGallery,
+        userID: this.testUser._id.toString()
+      }).save()
+        .then(gallery => this.testGallery = gallery)
+        .then(gallery => debug('gallery ',gallery));
+    });
+    afterEach(function(){
+      delete this.testGallery;
+
+      return Promise.resolve(Gallery.remove({}));
+    });
+    it('should return 200 with a valid id',function(){
+      return request.put(`/api/gallery/${this.testGallery._id}`)
+        .set({ Authorization: `Bearer ${this.testToken}` })
+        .send({ name: 'newGalleryName' })
+        .expect(200)
+        .expect(res => {
+          expect(res.body.name).to.eqaul('newGalleryName');
+          expect(res.body.desc).to.equal('amazing test gallery description');
+        });
     });
   });
 });
