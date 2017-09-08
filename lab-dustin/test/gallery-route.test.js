@@ -19,6 +19,12 @@ const exampleGallery = {
   desc: 'amazing test gallery description'
 };
 
+const exampleHacker = {
+  username: 'hackerDude',
+  password: 'notmypassword',
+  email: 'hacker@example.com'
+};
+
 describe('Gallery Routes',function(){
   beforeEach(function () {
     return User.createUser(exampleUser)
@@ -87,7 +93,8 @@ describe('Gallery Routes',function(){
           ...exampleGallery,
           userID: this.testUser._id.toString()
         }).save()
-          .then(gallery => this.testGallery = gallery);
+          .then(gallery => this.testGallery = gallery)
+          .then(gallery => debug('gallery ',gallery));
       });
       it('should return a gallery',function(){
         return request.get(`/api/gallery/${this.testGallery._id}`)
@@ -100,6 +107,27 @@ describe('Gallery Routes',function(){
             expect(res.body.created).to.not.be.undefined;
           });
       });
+    });
+    describe('bad token',function(){
+      beforeEach(function(){
+        return Gallery.createGallery(exampleGallery,this.testUser._id)
+          .then(gallery => this.testGallery = gallery);
+      });
+      beforeEach(function(){
+        return User.createUser(exampleHacker)
+          .then(hacker => this.testHacker = hacker)
+          .then(hacker => hacker.generateToken())
+          .then(token => this.hackerToken = token);
+      });
+      it('should return 401 if no token provided',function(){
+        return request.get(`/api/gallery${this.testGallery._id}`)
+          .expect(401);
+      });
+      it('should return 401 if the token is invalid',function(){
+        return request.get(`/api/gallery${this.testGallery._id}`)
+          .set({ Authorization: `Bearer ${this.hackerToken}`})
+          .expect(401);
+      })
     });
   });
 });
