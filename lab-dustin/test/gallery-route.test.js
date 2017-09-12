@@ -149,11 +149,14 @@ describe('Gallery Routes',function(){
     it('should return 200 with a valid id',function(){
       return request.put(`/api/gallery/${this.testGallery._id}`)
         .set({ Authorization: `Bearer ${this.testToken}` })
-        .send({ name: 'newGalleryName' })
+        .send({
+          name: 'newGalleryName',
+          desc: 'a new description'
+        })
         .expect(200)
         .expect(res => {
           expect(res.body.name).to.equal('newGalleryName');
-          expect(res.body.desc).to.equal('amazing test gallery description');
+          expect(res.body.desc).to.equal('a new description');
         });
     });
   });

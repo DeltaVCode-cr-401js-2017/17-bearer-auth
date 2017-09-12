@@ -47,8 +47,8 @@ router.post('/api/gallery',jsonParser,(req,res,next) => {
 router.put('/api/gallery/:id',bearerAuth,jsonParser,(req,res,next) => {
   debug(`PUT /api/gallery${req.params.id}`);
   debug('verified user ',req.user);
-  debug('user token ',req.headers.authorization);
-  Gallery.findOneAndUpdate(req.params.id,{ name: 'newGalleryName' },{ upsert: true })
+
+  Gallery.findOneAndUpdate(req.params.id,req.body,{ upsert: true })
     .then(query => {
       debug('Gallery to update ',query);
       return query;
