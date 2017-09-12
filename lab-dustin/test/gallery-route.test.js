@@ -132,7 +132,7 @@ describe('Gallery Routes',function(){
       });
     });
   });
-  describe('PUT /api/gallery',function(){
+  describe.only('PUT /api/gallery',function(){
     beforeEach(function(){
       return new Gallery({
         ...exampleGallery,
@@ -152,7 +152,7 @@ describe('Gallery Routes',function(){
         .send({ name: 'newGalleryName' })
         .expect(200)
         .expect(res => {
-          expect(res.body.name).to.eqaul('newGalleryName');
+          expect(res.body.name).to.equal('newGalleryName');
           expect(res.body.desc).to.equal('amazing test gallery description');
         });
     });
