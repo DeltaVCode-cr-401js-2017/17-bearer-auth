@@ -159,5 +159,22 @@ describe('Gallery Routes',function(){
           expect(res.body.desc).to.equal('a new description');
         });
     });
+    it('should return 400 for an invalid body',function(){
+      return request.put(`/api/gallery/${this.testGallery._id}`)
+        .set({ Authorization: `Bearer ${this.testToken}`})
+        .send('bad jason!')
+        .expect(400)
+        .expect(res => {
+          expect(res.body).to.equal('Invalid Body');
+        });
+    });
+    /*
+    it('should return 401 if no token is provided',function(){
+
+    });
+    it('should return 404 or a valid request that was not found',function(){
+
+    });
+    */
   });
 });

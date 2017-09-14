@@ -45,7 +45,7 @@ router.post('/api/gallery',jsonParser,(req,res,next) => {
 });
 
 router.put('/api/gallery/:id',bearerAuth,jsonParser,(req,res,next) => {
-  debug(`PUT /api/gallery${req.params.id}`);
+  debug(`PUT /api/gallery/${req.params.id}`);
   debug('verified user ',req.user);
 
   Gallery.findOneAndUpdate(req.params.id,req.body,{ upsert: true })
@@ -57,6 +57,6 @@ router.put('/api/gallery/:id',bearerAuth,jsonParser,(req,res,next) => {
     .then( updatedGallery => res.json(updatedGallery))
     .catch(err => {
       debug('Error!',err);
-      next();
+      next(err);
     });
 });
