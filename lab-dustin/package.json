@@ -2,8 +2,9 @@
   "name": "16-basic-auth",
   "version": "1.0.0",
   "description": "![DV](https://www.deltavcodeschool.com/wp-content/uploads/DeltaV.png) 16: Basic Auth\r ===",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
+    "start": "nodemon .",
     "test": "cross-env DEBUG=app:* mocha",
     "test:watch": "cross-env DEBUG=app:* mocha -w",
     "lint": "eslint ."

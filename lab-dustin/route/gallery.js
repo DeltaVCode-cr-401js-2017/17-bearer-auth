@@ -34,7 +34,7 @@ router.get('/api/gallery/:id',bearerAuth,(req,res,next) => {
 });
 
 router.post('/api/gallery',jsonParser,(req,res,next) => {
-  debug(`POST /api/gallery${req.params.id}`);
+  debug(`POST /api/gallery/${req.params.id}`);
 
   new Gallery({
     ...req.body,
@@ -44,19 +44,28 @@ router.post('/api/gallery',jsonParser,(req,res,next) => {
     .catch(next);
 });
 
-router.put('/api/gallery/:id',bearerAuth,jsonParser,(req,res,next) => {
+router.put('/api/gallery/:id',jsonParser,(req,res,next) => {
   debug(`PUT /api/gallery/${req.params.id}`);
   debug('verified user ',req.user);
+/*
+  if (req.user._id !== req.params.id){
+    return next(createError(404,'user does not match'));
+  }
+*/
+  if (req.body.userID){
+    debug('USER_ID',req.body.userID);
+    return next(createError(400,'Cannot set new ID'));
+  }
 
-  Gallery.findOneAndUpdate(req.params.id,req.body,{ upsert: true })
-    .then(query => {
-      debug('Gallery to update ',query);
-      return query;
+  Gallery.findByIdAndUpdate(req.params.id,req.body,{ new: true })
+    .then(gallery => {
+      debug('Gallery ',gallery);
+      if (gallery === null)
+        return Promise.reject(createError(404));
+      return res.json(gallery);
     })
-    .then(() => Gallery.findById(req.params.id))
-    .then( updatedGallery => res.json(updatedGallery))
     .catch(err => {
-      debug('Error!',err);
+      debug('Error!',err.message);
       next(err);
     });
 });

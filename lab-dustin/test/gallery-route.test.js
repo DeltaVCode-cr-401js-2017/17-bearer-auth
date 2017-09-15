@@ -122,7 +122,7 @@ describe('Gallery Routes',function(){
           .then(token => this.hackerToken = token);
       });
       it('should return 401 if no token provided',function(){
-        return request.get(`/api/gallery${this.testGallery._id}`)
+        return request.get(`/api/gallery/${this.testGallery._id}`)
           .expect(401);
       });
       it('should return 401 if the token is invalid',function(){
@@ -132,7 +132,7 @@ describe('Gallery Routes',function(){
       });
     });
   });
-  describe.only('PUT /api/gallery',function(){
+  describe('PUT /api/gallery',function(){
     beforeEach(function(){
       return new Gallery({
         ...exampleGallery,
@@ -159,22 +159,35 @@ describe('Gallery Routes',function(){
           expect(res.body.desc).to.equal('a new description');
         });
     });
-    it('should return 400 for an invalid body',function(){
-      return request.put(`/api/gallery/${this.testGallery._id}`)
-        .set({ Authorization: `Bearer ${this.testToken}`})
-        .send('bad jason!')
-        .expect(400)
-        .expect(res => {
-          expect(res.body).to.equal('Invalid Body');
-        });
+    describe('should return 400',function(){
+      it('if attempting to change userID',function(){
+        return request.put(`/api/gallery/${this.testGallery._id}`)
+          .set({ Authorization: `Bearer ${this.testToken}` })
+          .set( 'Content-Type', 'application/json')
+          .send({ userID : 'deadbeef' })
+          .expect(400);
+      });
     });
-    /*
-    it('should return 401 if no token is provided',function(){
-
+    describe('should return 401',function(){
+      it('should return 401 if no token is provided',function(){
+        return request.put(`/api/gallery/${this.testGallery._id}`)
+          .send({
+            name: 'newName',
+            desc: 'newDescription'
+          })
+          .expect(401);
+      });
     });
-    it('should return 404 or a valid request that was not found',function(){
-
+    describe('should return 404',function(){
+      it('for a valid request with id that was not found',function(){
+        return request.put(`/api/gallery/deadbeefdeadbeefdeadbeef`)
+          .set({ Authorization: `Bearer ${this.testToken}`})
+          .send({
+            name: 'newGalleryName',
+            desc: 'new description'
+          })
+          .expect(404);
+      });
     });
-    */
   });
 });
